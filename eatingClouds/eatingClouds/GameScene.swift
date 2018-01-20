@@ -18,11 +18,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.0)
         self.physicsWorld.contactDelegate = self
         
+        //setting background color
+        let backgroundColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1)
+        self.backgroundColor = backgroundColor
+        
         //draw a cloud
         let cloudTexture = SKTexture(imageNamed: "cloud1")
         cloudTexture.filteringMode = .nearest
         
+        let cloud = SKSpriteNode(texture: cloudTexture)
+        cloud.position = CGPoint(x: self.frame.width * 0.3, y: self.frame.height * 0.5)
         
+        self.addChild(cloud)
         
         
     }

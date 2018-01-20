@@ -8,28 +8,49 @@
 
 import UIKit
 import SpriteKit
-import GameplayKit
+
+extension SKNode {
+    
+    class func unarchiveFromFile(_ file: String) -> SKNode? {
+        let path = Bundle.main.path(forResource: file, ofType: "sks")
+        
+        let sceneData: Data?
+        
+        do {
+            sceneData = try Data(contentsOf: URL(fileURLWithPath: path!), options: .mappedIfSafe)
+        } catch {
+            sceneData = nil
+        }
+        
+        let archiver = NSKeyedUnarchiver(forReadingWith: sceneData!)
+        
+        archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
+        let scene = archiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey) as! GameScene
+        archiver.finishDecoding()
+        return scene
+    }
+    
+}
 
 class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//
-//        if let view = self.view as! SKView? {
-//            // Load the SKScene from 'GameScene.sks'
-//            if let scene = SKScene(fileNamed: "GameScene") {
-//                // Set the scale mode to scale to fit the window
-//                scene.scaleMode = .aspectFill
-//
-//                // Present the scene
-//                view.presentScene(scene)
-//            }
-//
-//            view.ignoresSiblingOrder = true
-//
-//            view.showsFPS = true
-//            view.showsNodeCount = true
-//        }
+        
+        if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
+            
+            let skView = self.view as! SKView
+            
+            skView.showsFPS = true
+            skView.showsNodeCount = true
+            
+            skView.ignoresSiblingOrder = true
+            
+            scene.scaleMode = .aspectFill
+            
+            skView.presentScene(scene)
+            
+        }
         
     }
 
