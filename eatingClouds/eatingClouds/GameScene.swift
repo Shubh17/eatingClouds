@@ -36,6 +36,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sun.position = CGPoint(x: self.frame.width * 0.8, y: self.frame.height * 0.8)
         self.addChild(sun)
         
+        // city image backgound
+        let cityTexture = SKTexture(imageNamed: "./pics/flying.png")
+        
         //cloud textures
         cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
         cloudTexture1.filteringMode = .nearest
@@ -52,7 +55,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //spawn clouds
         let spawn = SKAction.run(makeCloudsAndRemove)
-        let delay = SKAction.wait(forDuration: TimeInterval(3.5))
+        let delay = SKAction.wait(forDuration: TimeInterval(Double(arc4random_uniform(3)) + 2)) //random time till next cloud
         let spawnThenDelay = SKAction.sequence([spawn, delay])
         let spawnThenDelayForever = SKAction.repeatForever(spawnThenDelay)
         
@@ -62,8 +65,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func makeCloudsAndRemove(){
         let cloud = SKSpriteNode(texture: cloudTexture1)
-        cloud.setScale(2.0)
-        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.2), y: self.frame.height * 0.2)
+        cloud.setScale(2.5)
+        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.2), y: self.frame.height * 0.15)
         
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
         cloud.physicsBody?.isDynamic = false
