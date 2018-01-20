@@ -45,8 +45,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cityBackground.position = CGPoint(x: 0.0, y: 0.0)
         cityBackground.zPosition = -1
         self.addChild(cityBackground)
+        //spiderman
+        //let and var
+        let textureOne = SKTexture(imageNamed:"./pics/standing.png")//1 param
+        let textureTwo=SKTexture(imageNamed:"./pics/sideshot.png")
+        textureOne.filteringMode = .nearest
+        textureTwo.filteringMode = .nearest
         
+        let animation=SKAction.animate(with:[textureOne,textureTwo],timePerFrame:0.2)
+        let walking=SKAction.repeatForever(animation)
+        let spiderman = SKSpriteNode(texture:textureOne)
+        spiderman.setScale(0.8)
+        spiderman.position=CGPoint(x:self.frame.width*0.2,y:self.frame.height*0.3)
         
+        spiderman.run(walking)
+        self.addChild(spiderman)
+
         //cloud textures
         cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
         cloudTexture1.filteringMode = .nearest
@@ -74,7 +88,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func makeCloudsAndRemove(){
         let cloud = SKSpriteNode(texture: cloudTexture1)
         cloud.setScale(2.5)
-        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.2), y: self.frame.height * 0.15)
+        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3), y: self.frame.height * 0.15)
         
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
         cloud.physicsBody?.isDynamic = false
