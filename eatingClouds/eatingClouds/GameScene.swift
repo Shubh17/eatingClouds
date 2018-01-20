@@ -7,14 +7,22 @@
 //
 
 import SpriteKit
-import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // private var label : SKLabelNode?
     // private var spinnyNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
+        //physics
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.0)
+        self.physicsWorld.contactDelegate = self
+        
+        //draw a cloud
+        let cloudTexture = SKTexture(imageNamed: "cloud1")
+        cloudTexture.filteringMode = .nearest
+        
+        
         
         
     }
