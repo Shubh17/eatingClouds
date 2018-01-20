@@ -10,6 +10,12 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    let personCategory: UInt32 = 1 << 0
+    let cloudCategory: UInt32 = 1 << 1
+    
+    var cloudTexture1: SKTexture
+    var cloudTexture2: SKTexture
+    var cloudTexture3: SKTexture
     
     override func didMove(to view: SKView) {
         //physics
@@ -21,11 +27,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = backgroundColor
         
         //cloud textures
-        let cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
+        cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
         cloudTexture1.filteringMode = .nearest
-        let cloudTexture2 = SKTexture(imageNamed: "./clouds/cloud2.png")
+        cloudTexture2 = SKTexture(imageNamed: "./clouds/cloud2.png")
         cloudTexture2.filteringMode = .nearest
-        let cloudTexture3 = SKTexture(imageNamed: "./clouds/cloud3.png")
+        cloudTexture3 = SKTexture(imageNamed: "./clouds/cloud3.png")
         cloudTexture3.filteringMode = .nearest
         
         //cloud movement
@@ -35,18 +41,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let makeCloudsAndRemove = SKAction.sequence([cloudMoves, removeCloud])
         
         //spawn clouds
-//        let spawn = SKAction.run(makeCloudsAndRemove)
+        let spawn = SKAction.run(makeCloudsAndRemove)
         let delay = SKAction.wait(forDuration: TimeInterval(2.0))
+        let spawnThenDelay = SKAction.sequence([spawn, delay])
+        let spawnThenDelayForever = SKAction.repeatForever(spawnThenDelay)
         
-        let cloud = SKSpriteNode(texture: cloudTexture1)
-        cloud.position = CGPoint(x: self.frame.width * 0.5, y: self.frame.height * 0.5)
+        self.runS(spawnThenDelayForever)
         
-        self.addChild(cloud)
+//        let cloud = SKSpriteNode(texture: cloudTexture1)
+//        cloud.position = CGPoint(x: self.frame.width * 0.5, y: self.frame.height * 0.5)
+        
+//        self.addChild(cloud)
         
         
     }
     
     func makeCloudsAndRemove(){
+        let cloud = SKSpriteNode(texture: cloudTexture1)
+        cloud.position = CGPoint(x: self.frame.width, y: self.frame.height * 0.2)
+        
+        cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
+        cloud.physicsBody?.isDynamic = false
+        cloud.physicsBody?.categoryBitMask = cloudCategory
+        cloud.physicsBody?.contactTestBitMask = personCategory
+        
+        
+        
         
     }
 
