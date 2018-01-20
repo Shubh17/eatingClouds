@@ -10,8 +10,6 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    // private var label : SKLabelNode?
-    // private var spinnyNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
         //physics
@@ -19,15 +17,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
         
         //setting background color
-        let backgroundColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1)
+        let backgroundColor = SKColor(red: 255.0, green: 255.0, blue: 255.0, alpha: 1)
         self.backgroundColor = backgroundColor
         
         //draw a cloud
-        let cloudTexture = SKTexture(imageNamed: "cloud1")
+        let cloudTexture = SKTexture(imageNamed: "cloud1.png")
         cloudTexture.filteringMode = .nearest
         
         let cloud = SKSpriteNode(texture: cloudTexture)
-        cloud.position = CGPoint(x: self.frame.width * 0.3, y: self.frame.height * 0.5)
+        cloud.position = CGPoint(x: 0.0, y: 0.0)
         
         self.addChild(cloud)
         
