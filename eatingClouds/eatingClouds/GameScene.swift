@@ -25,8 +25,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
         
         //setting background color
-        let backgroundColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 221.0/255.0, alpha: 1.0)
+        let backgroundColor = SKColor(red: 42.0/255.0, green: 115.0/255.0, blue: 234.0/255.0, alpha: 1.0)
         self.backgroundColor = backgroundColor
+        
+        //making a sun
+        let sunColor = SKColor(red: 255.0/255.0, green: 244.0/255.0, blue: 48.0/255.0, alpha: 1.0) as SKColor
+        let sunSize = CGSize(width: 50.0, height: 50.0)
+        let sun = SKSpriteNode(color: sunColor, size: sunSize)
+        
+        sun.position = CGPoint(x: self.frame.width * 0.8, y: self.frame.height * 0.8)
+        self.addChild(sun)
         
         //cloud textures
         cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
@@ -44,17 +52,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //spawn clouds
         let spawn = SKAction.run(makeCloudsAndRemove)
-        let delay = SKAction.wait(forDuration: TimeInterval(2.0))
+        let delay = SKAction.wait(forDuration: TimeInterval(3.5))
         let spawnThenDelay = SKAction.sequence([spawn, delay])
         let spawnThenDelayForever = SKAction.repeatForever(spawnThenDelay)
         
         self.run(spawnThenDelayForever)
         
-        
     }
     
     func makeCloudsAndRemove(){
         let cloud = SKSpriteNode(texture: cloudTexture1)
+        cloud.setScale(2.0)
         cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.2), y: self.frame.height * 0.2)
         
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
