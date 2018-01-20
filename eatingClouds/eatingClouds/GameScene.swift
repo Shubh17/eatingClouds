@@ -37,7 +37,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(sun)
         
         // city image backgound
-        let cityTexture = SKTexture(imageNamed: "./pics/flying.png")
+        // needs to fit better
+        let cityTexture = SKTexture(imageNamed: "./pics/NYskyline.png")
+        cityTexture.filteringMode = .nearest
+       
+        let cityBackground = SKSpriteNode(texture: cityTexture)
+        cityBackground.position = CGPoint(x: 0.0, y: 0.0)
+        cityBackground.zPosition = -1
+        self.addChild(cityBackground)
+        
         
         //cloud textures
         cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
