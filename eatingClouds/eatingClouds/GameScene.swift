@@ -21,7 +21,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = backgroundColor
         
         //draw a cloud
-        let cloudTexture = SKTexture(imageNamed: "cloud1.png")
+        let cloudTexture = SKTexture(imageNamed: "./clouds/cloud1.png")
         cloudTexture.filteringMode = .nearest
         
         let cloud = SKSpriteNode(texture: cloudTexture)
