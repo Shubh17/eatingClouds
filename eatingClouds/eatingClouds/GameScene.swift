@@ -13,9 +13,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let personCategory: UInt32 = 1 << 0
     let cloudCategory: UInt32 = 1 << 1
     
-    var cloudTexture1: SKTexture
-    var cloudTexture2: SKTexture
-    var cloudTexture3: SKTexture
+    var cloudTexture1: SKTexture!
+    var cloudTexture2: SKTexture!
+    var cloudTexture3: SKTexture!
+    
+    var moveCloudsAndRemove: SKAction!
     
     override func didMove(to view: SKView) {
         //physics
@@ -38,7 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let distanceToMove = CGFloat(self.frame.width * cloudTexture1.size().width)
         let cloudMoves = SKAction.moveBy(x: -distanceToMove, y: 0.0, duration: TimeInterval(0.01 * distanceToMove))
         let removeCloud = SKAction.removeFromParent()
-        let makeCloudsAndRemove = SKAction.sequence([cloudMoves, removeCloud])
+        moveCloudsAndRemove = SKAction.sequence([cloudMoves, removeCloud])
         
         //spawn clouds
         let spawn = SKAction.run(makeCloudsAndRemove)
@@ -46,28 +48,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let spawnThenDelay = SKAction.sequence([spawn, delay])
         let spawnThenDelayForever = SKAction.repeatForever(spawnThenDelay)
         
-        self.runS(spawnThenDelayForever)
-        
-//        let cloud = SKSpriteNode(texture: cloudTexture1)
-//        cloud.position = CGPoint(x: self.frame.width * 0.5, y: self.frame.height * 0.5)
-        
-//        self.addChild(cloud)
+        self.run(spawnThenDelayForever)
         
         
     }
     
     func makeCloudsAndRemove(){
         let cloud = SKSpriteNode(texture: cloudTexture1)
-        cloud.position = CGPoint(x: self.frame.width, y: self.frame.height * 0.2)
+        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.2), y: self.frame.height * 0.2)
         
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
         cloud.physicsBody?.isDynamic = false
         cloud.physicsBody?.categoryBitMask = cloudCategory
         cloud.physicsBody?.contactTestBitMask = personCategory
         
-        
-        
-        
+        cloud.run(moveCloudsAndRemove)
+        self.addChild(cloud)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -77,6 +73,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
         
     }
 }
