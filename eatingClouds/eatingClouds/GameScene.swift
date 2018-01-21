@@ -17,7 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var cloudTexture2: SKTexture!
     var cloudTexture3: SKTexture!
     
-    var moveCloudsAndRemove: SKAction!
+    var moveCloudAndRemove: SKAction!
     
     override func didMove(to view: SKView) {
         //physics
@@ -73,29 +73,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let distanceToMove = CGFloat(self.frame.width * cloudTexture1.size().width)
         let cloudMoves = SKAction.moveBy(x: -distanceToMove, y: 0.0, duration: TimeInterval(0.01 * distanceToMove))
         let removeCloud = SKAction.removeFromParent()
-        moveCloudsAndRemove = SKAction.sequence([cloudMoves, removeCloud])
+        moveCloudAndRemove = SKAction.sequence([cloudMoves, removeCloud])
         
         //spawn clouds
         let spawn = SKAction.run(makeCloudsAndRemove)
-        let delay = SKAction.wait(forDuration: TimeInterval(Double(arc4random_uniform(3)) + 2)) //random time till next cloud
-        let spawnThenDelay = SKAction.sequence([spawn, delay])
-        let spawnThenDelayForever = SKAction.repeatForever(spawnThenDelay)
-        
-        self.run(spawnThenDelayForever)
+        let randomTime = Double(arc4random_uniform(30))/10.0 + 1.0
+        let delay = SKAction.wait(forDuration: TimeInterval(randomTime))
+        let spawnAndRemoveForever = SKAction.repeatForever(SKAction.sequence([spawn, delay]))
+        self.run(spawnAndRemoveForever)
         
     }
     
     func makeCloudsAndRemove(){
         let cloud = SKSpriteNode(texture: cloudTexture1)
         cloud.setScale(2.5)
-        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3), y: self.frame.height * 0.15)
+        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3),
+                                 y: self.frame.height * CGFloat(arc4random_uniform(5))/10 + cloud.size.height)
         
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
         cloud.physicsBody?.isDynamic = false
         cloud.physicsBody?.categoryBitMask = cloudCategory
         cloud.physicsBody?.contactTestBitMask = personCategory
         
-        cloud.run(moveCloudsAndRemove)
+        cloud.run(moveCloudAndRemove)
         self.addChild(cloud)
     }
 
