@@ -12,6 +12,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let personCategory: UInt32 = 1 << 0
     let cloudCategory: UInt32 = 1 << 1
+    let groundCategory: UInt32 = 1 << 2
     
     var clouds: SKNode!
     
@@ -70,12 +71,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         spiderman.physicsBody?.allowsRotation = false
         
         spiderman.physicsBody?.categoryBitMask = personCategory
-        spiderman.physicsBody?.collisionBitMask = cloudCategory
+        spiderman.physicsBody?.collisionBitMask = cloudCategory | groundCategory
         spiderman.physicsBody?.contactTestBitMask = cloudCategory
         
         self.addChild(spiderman)
         
-
         //cloud textures
         clouds = SKNode()
         self.addChild(clouds)
@@ -98,7 +98,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let randomTime = Double(arc4random_uniform(30))/10.0 + 1.0
         let delay = SKAction.wait(forDuration: TimeInterval(randomTime))
         let spawnAndRemoveForever = SKAction.repeatForever(SKAction.sequence([spawn, delay]))
-        self.run(spawnAndRemoveForever)
+        //self.run(spawnAndRemoveForever)
+        
+        //ground
+        let ground = SKNode()
+        ground.position = CGPoint(x: 0, y: -1)
+        ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: self.frame.size.width, height: 1))
+        ground.physicsBody?.isDynamic = false
+        ground.physicsBody?.categoryBitMask = groundCategory
+        self.addChild(ground)
         
     }
     
