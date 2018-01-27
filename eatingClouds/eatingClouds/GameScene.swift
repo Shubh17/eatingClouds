@@ -48,12 +48,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // needs to fit better
         let cityTexture = SKTexture(imageNamed: "./pics/fullsize.png")
         cityTexture.filteringMode = .nearest
-       
-        let cityBackground = SKSpriteNode(texture: cityTexture)
-        cityBackground.setScale((self.frame.size.height + 10) / cityBackground.size.height) // fits the height of screen
-        cityBackground.position = CGPoint(x: cityBackground.size.width * 0.5, y: cityBackground.size.height * 0.5 - 1)
-        cityBackground.zPosition = -1
-        self.addChild(cityBackground)
+        let scale = (self.frame.size.height + 10) / cityTexture.size().height
+        
+        let cityMovement = SKAction.moveBy(x: -cityTexture.size().width * scale, y: 0.0,
+                                           duration: TimeInterval(cityTexture.size().width * 0.01))
+        let resetCity = SKAction.moveBy(x: cityTexture.size().width * scale, y: 0.0, duration: TimeInterval(0.0))
+        let moveBackground = SKAction.sequence([cityMovement, resetCity])
+        
+        for x in 0..<2 {
+            let backgroundNode = SKSpriteNode(texture: cityTexture)
+            backgroundNode.setScale(scale)
+            let offset = CGFloat(x) * cityTexture.size().width * scale // the first one will be 0
+            backgroundNode.position = CGPoint(x: (cityTexture.size().width * 0.5 * scale) + offset,
+                                              y: cityTexture.size().height * 0.5 * scale)
+            backgroundNode.zPosition = -1
+            backgroundNode.run(SKAction.repeatForever(moveBackground))
+            self.addChild(backgroundNode)
+        }
         
         //spiderman
         //let and var
