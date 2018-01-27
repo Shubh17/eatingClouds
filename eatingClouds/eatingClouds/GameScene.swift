@@ -37,20 +37,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = backgroundColor
         
         //making a sun
-        let sunColor = SKColor(red: 255.0/255.0, green: 244.0/255.0, blue: 48.0/255.0, alpha: 1.0) as SKColor
-        let sunSize = CGSize(width: 50.0, height: 50.0)
-        let sun = SKSpriteNode(color: sunColor, size: sunSize)
-        
-        sun.position = CGPoint(x: self.frame.width * 0.8, y: self.frame.height * 0.8)
-        self.addChild(sun)
+//        let sunColor = SKColor(red: 255.0/255.0, green: 244.0/255.0, blue: 48.0/255.0, alpha: 1.0) as SKColor
+//        let sunSize = CGSize(width: 50.0, height: 50.0)
+//        let sun = SKSpriteNode(color: sunColor, size: sunSize)
+//
+//        sun.position = CGPoint(x: self.frame.width * 0.8, y: self.frame.height * 0.8)
+//        self.addChild(sun)
         
         // city image backgound
         // needs to fit better
-        let cityTexture = SKTexture(imageNamed: "./pics/NYskyline.png")
+        let cityTexture = SKTexture(imageNamed: "./pics/fullsize.png")
         cityTexture.filteringMode = .nearest
        
         let cityBackground = SKSpriteNode(texture: cityTexture)
-        cityBackground.position = CGPoint(x: 0.0, y: 0.0)
+        cityBackground.setScale((self.frame.size.height + 10) / cityBackground.size.height) // fits the height of screen
+        cityBackground.position = CGPoint(x: cityBackground.size.width * 0.5, y: cityBackground.size.height * 0.5 - 1)
         cityBackground.zPosition = -1
         self.addChild(cityBackground)
         
@@ -152,14 +153,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        if !inGame {
-            print("Not in game")
-        } else {
-            print("In game")
-        }
+//        if !inGame {
+//            print("Not in game")
+//        } else {
+//            print("In game")
+//        }
     }
     
     func isInContactWith(_ contact: SKPhysicsContact, bitmask: UInt32) -> Bool {
@@ -172,4 +172,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             inGame = false
         }
     }
+    
 }
