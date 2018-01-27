@@ -33,16 +33,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
         
         //setting background color
-        let backgroundColor = SKColor(red: 42.0/255.0, green: 115.0/255.0, blue: 234.0/255.0, alpha: 1.0)
-        self.backgroundColor = backgroundColor
-        
-        //making a sun
-//        let sunColor = SKColor(red: 255.0/255.0, green: 244.0/255.0, blue: 48.0/255.0, alpha: 1.0) as SKColor
-//        let sunSize = CGSize(width: 50.0, height: 50.0)
-//        let sun = SKSpriteNode(color: sunColor, size: sunSize)
-//
-//        sun.position = CGPoint(x: self.frame.width * 0.8, y: self.frame.height * 0.8)
-//        self.addChild(sun)
+//        let backgroundColor = SKColor(red: 42.0/255.0, green: 115.0/255.0, blue: 234.0/255.0, alpha: 1.0)
+//        self.backgroundColor = backgroundColor
         
         // city image backgound
         // needs to fit better
