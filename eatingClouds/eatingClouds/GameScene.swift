@@ -24,9 +24,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var spiderman: SKSpriteNode!
     
+    var inGame = false
+    var score = 0
+    
     override func didMove(to view: SKView) {
         //physics
-        self.physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: 0.0)
         self.physicsWorld.contactDelegate = self
         
         //setting background color
@@ -62,7 +65,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let walking = SKAction.repeatForever(animation)
         spiderman = SKSpriteNode(texture: textureOne)
         spiderman.setScale(0.8)
-        spiderman.position=CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.3)
+        spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
         
         spiderman.run(walking)
         
@@ -72,7 +75,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         spiderman.physicsBody?.categoryBitMask = personCategory
         spiderman.physicsBody?.collisionBitMask = cloudCategory | groundCategory
-        spiderman.physicsBody?.contactTestBitMask = cloudCategory
+        spiderman.physicsBody?.contactTestBitMask = cloudCategory | groundCategory
         
         self.addChild(spiderman)
         
@@ -128,9 +131,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         cloudNode.run(moveCloudAndRemove)
         clouds.addChild(cloudNode)
+
+    }
+    
+    func resetScene(){
+        score = 0
+        inGame = true
+        spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !inGame {
+            resetScene()
+            return
+        }
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.25))
@@ -140,10 +155,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
+        if !inGame {
+            print("Not in game")
+        } else {
+            print("In game")
+        }
+    }
+    
+    func isInContactWith(_ contact: SKPhysicsContact, bitmask: UInt32) -> Bool {
+        return contact.bodyA.categoryBitMask & bitmask == bitmask ||
+            contact.bodyB.categoryBitMask & bitmask == bitmask
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        
+        if inGame && isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
+            inGame = false
+        }
     }
 }
