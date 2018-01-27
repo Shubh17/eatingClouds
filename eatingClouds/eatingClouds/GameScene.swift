@@ -43,7 +43,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let scale = (self.frame.size.height + 10) / cityTexture.size().height
         
         let cityMovement = SKAction.moveBy(x: -cityTexture.size().width * scale, y: 0.0,
-                                           duration: TimeInterval(cityTexture.size().width * 0.01))
+                                           duration: TimeInterval(cityTexture.size().width * 0.05))
         let resetCity = SKAction.moveBy(x: cityTexture.size().width * scale, y: 0.0, duration: TimeInterval(0.0))
         let moveBackground = SKAction.sequence([cityMovement, resetCity])
         
@@ -142,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         score = 0
         inGame = true
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
-        self.physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: -10.0)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -152,7 +152,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
-            spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.25))
+            spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.35))
         }
     }
     
