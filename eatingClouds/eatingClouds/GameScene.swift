@@ -30,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var scoreLabel: SKLabelNode!
     var highScoreLabel: SKLabelNode!
+    var playAgainLabel: SKLabelNode!
     
     override func didMove(to view: SKView) {
         //physics
@@ -124,6 +125,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.position = CGPoint(x: self.frame.size.width - 50, y: self.frame.size.height - 80)
         scoreLabel.fontSize = 70
         self.addChild(scoreLabel)
+        
+        //play again
+        playAgainLabel = SKLabelNode(fontNamed: "Arial")
+        playAgainLabel.fontSize = 70
+        playAgainLabel.numberOfLines = 2
+        playAgainLabel.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height - 350)
+        playAgainLabel.text = "Tap to Play Again"
     }
     
     func makeCloudsAndRemove(){
@@ -152,6 +160,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -10.0)
         highScoreLabel?.removeFromParent()
+        playAgainLabel?.removeFromParent()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -181,6 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             inGame = false
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             checkScoreAndStore()
+            self.addChild(playAgainLabel)
         }
     }
     
