@@ -26,8 +26,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var inGame = false
     var score = 0
+    let highScoreKey = "com.clouds.highscore"
     
     var scoreLabel: SKLabelNode!
+    var highScoreLabel: SKLabelNode!
     
     override func didMove(to view: SKView) {
         //physics
@@ -149,6 +151,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         inGame = true
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -10.0)
+        highScoreLabel?.removeFromParent()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -160,17 +163,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.35))
             score += 1
+            scoreLabel?.text = String(score)
         }
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-//        if !inGame {
-//            print("Not in game")
-//        } else {
-//            print("In game")
-//        }
-        scoreLabel?.text = String(score)
     }
     
     func isInContactWith(_ contact: SKPhysicsContact, bitmask: UInt32) -> Bool {
@@ -182,6 +180,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if inGame && isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
             inGame = false
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
+            checkScoreAndStore()
+        }
+    }
+    
+    fileprivate func checkScoreAndStore() {
+        let highScore = UserDefaults.standard.integer(forKey: highScoreKey)
+        if score > Int(highScore) {
+            //highscore
+            highScoreLabel = SKLabelNode(fontNamed: "Arial")
+            highScoreLabel.fontSize = 100
+            highScoreLabel.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height - 250)
+            highScoreLabel.text = "HIGH SCORE"
+            self.addChild(highScoreLabel)
+            
+            UserDefaults.standard.set(score, forKey: highScoreKey)
+            UserDefaults.standard.synchronize()
         }
     }
     
