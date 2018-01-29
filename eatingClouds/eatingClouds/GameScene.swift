@@ -27,6 +27,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var inGame = false
     var score = 0
     
+    var scoreLabel: SKLabelNode!
+    
     override func didMove(to view: SKView) {
         //physics
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0.0)
@@ -115,6 +117,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody?.categoryBitMask = groundCategory
         self.addChild(ground)
         
+        //score
+        scoreLabel = SKLabelNode(fontNamed: "Arial")
+        scoreLabel.position = CGPoint(x: self.frame.size.width - 50, y: self.frame.size.height - 80)
+        scoreLabel.fontSize = 70
+        self.addChild(scoreLabel)
     }
     
     func makeCloudsAndRemove(){
@@ -135,7 +142,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         cloudNode.run(moveCloudAndRemove)
         clouds.addChild(cloudNode)
-
     }
     
     func resetScene(){
@@ -153,6 +159,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.35))
+            score += 1
         }
     }
     
@@ -163,6 +170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        } else {
 //            print("In game")
 //        }
+        scoreLabel?.text = String(score)
     }
     
     func isInContactWith(_ contact: SKPhysicsContact, bitmask: UInt32) -> Bool {
@@ -173,6 +181,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         if inGame && isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
             inGame = false
+            spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
         }
     }
     
