@@ -32,17 +32,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var highScoreLabel: SKLabelNode!
     var playAgainLabel: SKLabelNode!
     
+    var moving: SKNode!
+    
     override func didMove(to view: SKView) {
         //physics
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0.0)
         self.physicsWorld.contactDelegate = self
         
-        //setting background color
-//        let backgroundColor = SKColor(red: 42.0/255.0, green: 115.0/255.0, blue: 234.0/255.0, alpha: 1.0)
-//        self.backgroundColor = backgroundColor
+        moving = SKNode()
+        moving.speed = 0.0 // all the children will also follow this speed
+        self.addChild(moving)
         
         // city image backgound
-        // needs to fit better
         let cityTexture = SKTexture(imageNamed: "./pics/fullsize.png")
         cityTexture.filteringMode = .nearest
         let scale = (self.frame.size.height + 10) / cityTexture.size().height
@@ -60,25 +61,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                               y: cityTexture.size().height * 0.5 * scale)
             backgroundNode.zPosition = -1
             backgroundNode.run(SKAction.repeatForever(moveBackground))
-            self.addChild(backgroundNode)
+            moving.addChild(backgroundNode)
         }
         
         //spiderman
-        //let and var
         let textureOne = SKTexture(imageNamed: "./pics/standing.png")//1 param
         let textureTwo = SKTexture(imageNamed: "./pics/sideshot.png")
         textureOne.filteringMode = .nearest
         textureTwo.filteringMode = .nearest
         
+        //walking animation
         let animation = SKAction.animate(with: [textureOne, textureTwo], timePerFrame:0.2)
         let walking = SKAction.repeatForever(animation)
         spiderman = SKSpriteNode(texture: textureOne)
         spiderman.setScale(0.8)
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
         
-        spiderman.run(walking)
-        
-        spiderman.physicsBody = SKPhysicsBody(rectangleOf: spiderman.size)
+        spiderman.physicsBody = SKPhysicsBody(rectangleOf: spiderman.size) // needs converted to texture size
         spiderman.physicsBody?.isDynamic = true
         spiderman.physicsBody?.allowsRotation = false
         spiderman.physicsBody?.density = CGFloat(5)
@@ -87,11 +86,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         spiderman.physicsBody?.collisionBitMask = cloudCategory | groundCategory
         spiderman.physicsBody?.contactTestBitMask = cloudCategory | groundCategory
         
+        spiderman.run(walking)
         self.addChild(spiderman)
         
         //cloud textures
         clouds = SKNode()
-        self.addChild(clouds)
+        moving.addChild(clouds)
         
         cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
         cloudTexture1.filteringMode = .nearest
@@ -158,6 +158,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func resetScene(){
         score = 0
         inGame = true
+        moving.speed = 1.0
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
         highScoreLabel?.removeFromParent()
@@ -173,7 +174,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.75))
             score += 1
-            scoreLabel?.text = String(score)
+            scoreLabel?.text = "\(score)"
         }
     }
     
@@ -189,6 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         if inGame && isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
             inGame = false
+            moving.speed = 0.0
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             checkScoreAndStore()
             self.addChild(playAgainLabel)
