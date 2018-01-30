@@ -81,6 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         spiderman.physicsBody = SKPhysicsBody(rectangleOf: spiderman.size)
         spiderman.physicsBody?.isDynamic = true
         spiderman.physicsBody?.allowsRotation = false
+        spiderman.physicsBody?.density = CGFloat(5)
         
         spiderman.physicsBody?.categoryBitMask = personCategory
         spiderman.physicsBody?.collisionBitMask = cloudCategory | groundCategory
@@ -158,7 +159,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         score = 0
         inGame = true
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
-        self.physicsWorld.gravity = CGVector(dx: 0, dy: -10.0)
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
         highScoreLabel?.removeFromParent()
         playAgainLabel?.removeFromParent()
     }
@@ -170,7 +171,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
-            spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.35))
+            spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.75))
             score += 1
             scoreLabel?.text = String(score)
         }
