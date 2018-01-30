@@ -143,7 +143,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cloud.setScale(2.5)
         
         cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3),
-                                    y: self.frame.height * CGFloat(arc4random_uniform(5))/10 + cloud.size.height)
+                                 y: self.frame.height * CGFloat(arc4random_uniform(5))/10 + cloud.size.height)
         
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
         cloud.physicsBody?.isDynamic = false
@@ -172,7 +172,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.75))
-            score += 1
             scoreLabel?.text = "\(score)"
         }
     }
@@ -187,13 +186,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        if inGame && isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
+        if !inGame {
+            return
+        }
+        if isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
             inGame = false
             moving.speed = 0.0
             clouds.removeAllChildren()
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             checkScoreAndStore()
             self.addChild(playAgainLabel)
+        } else if isInContactWith(contact, bitmask: cloudCategory) { //if we hit a cloud
+            score += 1
         }
     }
     
