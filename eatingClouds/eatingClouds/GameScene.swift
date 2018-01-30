@@ -101,17 +101,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cloudTexture3.filteringMode = .nearest
         
         //cloud movement
-        let distanceToMove = CGFloat(self.frame.width * cloudTexture1.size().width)
-        let cloudMoves = SKAction.moveBy(x: -distanceToMove * 0.5, y: 0.0, duration: TimeInterval(0.01 * distanceToMove))
+        let distanceToMove = CGFloat(self.frame.size.width + cloudTexture1.size().width)
+        let cloudMoves = SKAction.moveBy(x: -distanceToMove, y: 0.0, duration: TimeInterval(0.005 * distanceToMove))
         let removeCloud = SKAction.removeFromParent()
         moveCloudAndRemove = SKAction.sequence([cloudMoves, removeCloud])
         
         //spawn clouds
         let spawn = SKAction.run(makeCloudsAndRemove)
-        let randomTime = Double(arc4random_uniform(30))/10.0 + 1.0
+        let randomTime = Double(arc4random_uniform(30))/10.0 + 1.0 //make this random every time
         let delay = SKAction.wait(forDuration: TimeInterval(randomTime))
         let spawnAndRemoveForever = SKAction.repeatForever(SKAction.sequence([spawn, delay]))
-        //self.run(spawnAndRemoveForever)
+        self.run(spawnAndRemoveForever)
         
         //ground
         let ground = SKNode()
@@ -136,23 +136,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func makeCloudsAndRemove(){
-        let cloudNode = SKNode()
-        
+        if !inGame { // don't spawn clouds till game starts
+            return
+        }
         let cloud = SKSpriteNode(texture: cloudTexture1)
         cloud.setScale(2.5)
         
-        cloudNode.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3),
+        cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3),
                                     y: self.frame.height * CGFloat(arc4random_uniform(5))/10 + cloud.size.height)
         
-        cloudNode.addChild(cloud)
+        cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
+        cloud.physicsBody?.isDynamic = false
+        cloud.physicsBody?.categoryBitMask = cloudCategory
+        cloud.physicsBody?.contactTestBitMask = personCategory
         
-        cloudNode.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
-        cloudNode.physicsBody?.isDynamic = false
-        cloudNode.physicsBody?.categoryBitMask = cloudCategory
-        cloudNode.physicsBody?.contactTestBitMask = personCategory
-        
-        cloudNode.run(moveCloudAndRemove)
-        clouds.addChild(cloudNode)
+        cloud.run(moveCloudAndRemove)
+        clouds.addChild(cloud)
     }
     
     func resetScene(){
@@ -191,6 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if inGame && isInContactWith(contact, bitmask: groundCategory) { // if we hit the ground
             inGame = false
             moving.speed = 0.0
+            clouds.removeAllChildren()
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             checkScoreAndStore()
             self.addChild(playAgainLabel)
