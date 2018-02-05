@@ -146,7 +146,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3),
                                  y: self.frame.height * CGFloat(arc4random_uniform(5))/10 + cloud.size.height)
         
-        cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
+        cloud.physicsBody = SKPhysicsBody(texture: cloudTexture1, size: CGSize(width: cloud.size.width, height: cloud.size.height))
         cloud.physicsBody?.isDynamic = false
         cloud.physicsBody?.categoryBitMask = cloudCategory
         
@@ -184,7 +184,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             moving.speed = 1.0
             touchLength = event!.timestamp - touchLength
             
-            //apply a jump based on lenght of press
+            //apply a jump based on length of press
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 1.5 * CGFloat(touchLength)))
             
             touchLength = 0.0
