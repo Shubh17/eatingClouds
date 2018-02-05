@@ -23,6 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var moveCloudAndRemove: SKAction!
     
     var spiderman: SKSpriteNode!
+    var touchLength = 0.0
     
     var inGame = false
     var score = 0
@@ -148,7 +149,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cloud.physicsBody = SKPhysicsBody(rectangleOf: cloud.size)
         cloud.physicsBody?.isDynamic = false
         cloud.physicsBody?.categoryBitMask = cloudCategory
-        cloud.physicsBody?.contactTestBitMask = personCategory
         
         cloud.run(moveCloudAndRemove)
         clouds.addChild(cloud)
@@ -169,15 +169,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             resetScene()
             return
         }
+        if moving.speed == 0.0 {
+            touchLength = event!.timestamp
+            return
+        }
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.75))
-            scoreLabel?.text = "\(score)"
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if moving.speed == 0.0 && touchLength > 0 {
+            moving.speed = 1.0
+            touchLength = event!.timestamp - touchLength
+            
+            //apply a jump based on lenght of press
+            spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 1.5 * CGFloat(touchLength)))
+            
+            touchLength = 0.0
         }
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        scoreLabel?.text = "\(score)"
     }
     
     func isInContactWith(_ contact: SKPhysicsContact, bitmask: UInt32) -> Bool {
@@ -198,6 +214,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.addChild(playAgainLabel)
         } else if isInContactWith(contact, bitmask: cloudCategory) { //if we hit a cloud
             score += 1
+            moving.speed = 0.0
+            //this is where now want to charge a jump
         }
     }
     
