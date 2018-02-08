@@ -111,7 +111,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //spawn clouds
         let spawn = SKAction.run(makeCloudsAndRemove)
-        let randomTime = Double(arc4random_uniform(30))/10.0 + 1.0 //make this random every time
+        let randomTime = Double(arc4random_uniform(40))/10.0 + 1.0 //make this random every time
         let delay = SKAction.wait(forDuration: TimeInterval(randomTime))
         let spawnAndRemoveForever = SKAction.repeatForever(SKAction.sequence([spawn, delay]))
         self.run(spawnAndRemoveForever)
@@ -201,6 +201,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         scoreLabel?.text = "\(score)"
+        if spiderman.position.x <= 0 {
+            inGame = false
+            moving.speed = 0.0
+            clouds.removeAllChildren()
+            spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
+            checkScoreAndStore()
+            self.addChild(playAgainLabel)
+        }
     }
     
     func isInContactWith(_ contact: SKPhysicsContact, bitmask: UInt32) -> Bool {
