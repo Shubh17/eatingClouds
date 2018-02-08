@@ -28,6 +28,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var inGame = false
     var score = 0
     let highScoreKey = "com.clouds.highscore"
+    var hitFirstCloud = false
     
     var scoreLabel: SKLabelNode!
     var highScoreLabel: SKLabelNode!
@@ -173,6 +174,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             touchLength = event!.timestamp
             return
         }
+        if hitFirstCloud {
+            return
+        }
         for _ in touches {
             spiderman.physicsBody?.velocity = CGVector(dx: 0.0, dy: 0.0)
             spiderman.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: self.frame.height * 0.75))
@@ -215,6 +219,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if isInContactWith(contact, bitmask: cloudCategory) { //if we hit a cloud
             score += 1
             moving.speed = 0.0
+            hitFirstCloud = true
             //this is where now want to charge a jump
         }
     }
