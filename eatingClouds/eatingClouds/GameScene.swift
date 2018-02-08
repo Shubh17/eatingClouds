@@ -83,6 +83,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         spiderman.physicsBody?.isDynamic = true
         spiderman.physicsBody?.allowsRotation = false
         spiderman.physicsBody?.density = CGFloat(5)
+        spiderman.physicsBody?.restitution = 0.0
         
         spiderman.physicsBody?.categoryBitMask = personCategory
         spiderman.physicsBody?.collisionBitMask = cloudCategory | groundCategory
@@ -150,6 +151,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cloud.physicsBody = SKPhysicsBody(texture: cloudTexture1, size: CGSize(width: cloud.size.width, height: cloud.size.height))
         cloud.physicsBody?.isDynamic = false
         cloud.physicsBody?.categoryBitMask = cloudCategory
+        cloud.physicsBody?.restitution = 0.0
         
         cloud.run(moveCloudAndRemove)
         clouds.addChild(cloud)
@@ -159,6 +161,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         score = 0
         inGame = true
         moving.speed = 1.0
+        hitFirstCloud = false
         spiderman.position = CGPoint(x: self.frame.width * 0.2, y: self.frame.height * 0.4)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
         highScoreLabel?.removeFromParent()
