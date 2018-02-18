@@ -16,9 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var clouds: SKNode!
     
-    var cloudTexture1: SKTexture!
-    var cloudTexture2: SKTexture!
-    var cloudTexture3: SKTexture!
+    var cloudTexture: SKTexture!
     
     var moveCloudAndRemove: SKAction!
     
@@ -96,15 +94,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         clouds = SKNode()
         moving.addChild(clouds)
         
-        cloudTexture1 = SKTexture(imageNamed: "./clouds/cloud1.png")
-        cloudTexture1.filteringMode = .nearest
-        cloudTexture2 = SKTexture(imageNamed: "./clouds/cloud2.png")
-        cloudTexture2.filteringMode = .nearest
-        cloudTexture3 = SKTexture(imageNamed: "./clouds/cloud3.png")
-        cloudTexture3.filteringMode = .nearest
+        cloudTexture = SKTexture(imageNamed: "./pics/cloud.png")
+        cloudTexture.filteringMode = .nearest
         
         //cloud movement
-        let distanceToMove = CGFloat(self.frame.size.width + cloudTexture1.size().width)
+        let distanceToMove = CGFloat(self.frame.size.width + cloudTexture.size().width)
         let cloudMoves = SKAction.moveBy(x: -distanceToMove, y: 0.0, duration: TimeInterval(0.005 * distanceToMove))
         let removeCloud = SKAction.removeFromParent()
         moveCloudAndRemove = SKAction.sequence([cloudMoves, removeCloud])
@@ -142,13 +136,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if !inGame { // don't spawn clouds till game starts
             return
         }
-        let cloud = SKSpriteNode(texture: cloudTexture1)
-        cloud.setScale(2.5)
+        let cloud = SKSpriteNode(texture: cloudTexture)
+        cloud.setScale(0.5)
         
         cloud.position = CGPoint(x: self.frame.width + (cloud.size.width * 0.3),
                                  y: self.frame.height * CGFloat(arc4random_uniform(5))/10 + cloud.size.height)
         
-        cloud.physicsBody = SKPhysicsBody(texture: cloudTexture1, size: CGSize(width: cloud.size.width, height: cloud.size.height))
+        cloud.physicsBody = SKPhysicsBody(texture: cloudTexture, size: CGSize(width: cloud.size.width, height: cloud.size.height))
         cloud.physicsBody?.isDynamic = false
         cloud.physicsBody?.categoryBitMask = cloudCategory
         cloud.physicsBody?.restitution = 0.0
